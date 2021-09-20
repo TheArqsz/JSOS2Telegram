@@ -26,7 +26,7 @@ export JSOS_PASSWORD=xxx
 export TG_TOKEN=xxx
 export TG_CHAT_ID=xxx
 ```
-where `TG_CHAT_ID` is an ID that we collected in step `Chat ID`, `TG_TOKEN` is a bot API token and `JSOS_USERNAME` and `JSOS_PASSWORD` are credentials for a JSOS.
+where `TG_CHAT_ID` is an ID that we collected in step [`Chat ID`](#chat-id), `TG_TOKEN` is a [bot API token](#bot-api-token) and `JSOS_USERNAME` and `JSOS_PASSWORD` are credentials for a JSOS.
 
 ## Run
 
