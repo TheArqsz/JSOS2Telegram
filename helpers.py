@@ -30,10 +30,16 @@ def wait_for_url_by_element_selector(driver: WebDriver, url: str, css_selector: 
         raise Exception(f"URL {url} took too long to load")
 
 def type_in_input_by_selector(driver: WebDriver, css_selector: str, content: str):
-    if element_exists(driver=driver, css_selector=css_selector):
-        element = driver.find_element_by_css_selector(css_selector=css_selector)
-    else:
-        raise Exception(f"Element {css_selector} not found")
+    tries = 0
+    while tries < 5:
+        if element_exists(driver=driver, css_selector=css_selector):
+            element = driver.find_element_by_css_selector(css_selector=css_selector)
+            break
+        else:
+            sleep(5)
+            tries += 1
+        if tries == 5:
+            raise Exception(f"Element {css_selector} not found")
     for char in content:
         start = 0.01 
         stop = 0.3 
