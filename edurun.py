@@ -7,7 +7,7 @@ from edukacja import (
     is_user_logged_in, login, logout
 )
 from helpers import (
-    clean_driver, send_message_by_tg,
+    clean_driver, send_debug_message_by_tg, send_message_by_tg,
     send_messages_by_tg
 )
 
@@ -36,6 +36,7 @@ options.headless = True
 driver = None
 
 info("Starting the app")
+send_debug_message_by_tg(message="<b>Status message</b>: Starting the app")
 
 try:
     while True:

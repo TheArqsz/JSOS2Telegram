@@ -1,3 +1,4 @@
+import logging
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -5,9 +6,9 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
-from logging import debug, error
+from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
-from const import SHORT_WAIT_TIME, TG_CHAT_ID, TG_URL
+from const import LOG_LEVEL, SHORT_WAIT_TIME, TG_CHAT_ID, TG_URL
 
 import random
 import requests
@@ -80,6 +81,20 @@ def escape_chars(text: str) -> str:
     return text
 
 
+def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):
+    if LOG_LEVEL == DEBUG:
+        data = {
+            "chat_id": str(TG_CHAT_ID),
+            "text": message,
+            "parse_mode": "html"
+        }
+        r = requests.post(TG_URL, json=data)
+        if r.status_code == 200:
+            debug(f"{t} Telegram message sent")
+        else:
+            debug(f"Message {message} not sent. Error: {r.content}")
+
+
 def send_message_by_tg(message: str, t: str = 'INFO'):
     data = {
         "chat_id": str(TG_CHAT_ID),
@@ -88,7 +103,7 @@ def send_message_by_tg(message: str, t: str = 'INFO'):
     }
     r = requests.post(TG_URL, json=data)
     if r.status_code == 200:
-        debug(t + "Telegram message sent")
+        debug(f"{t} Telegram message sent")
     else:
         debug(f"Message {message} not sent. Error: {r.content}")
 
