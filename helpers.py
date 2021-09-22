@@ -12,6 +12,7 @@ from const import SHORT_WAIT_TIME, TG_CHAT_ID, TG_URL
 import random
 import requests
 
+
 def element_exists(driver: WebDriver, css_selector: str) -> bool:
     try:
         driver.find_element_by_css_selector(css_selector=css_selector)
@@ -21,19 +22,23 @@ def element_exists(driver: WebDriver, css_selector: str) -> bool:
         debug(f"Element {css_selector} does not exist")
         return False
 
+
 def wait_for_url_by_element_selector(driver: WebDriver, url: str, css_selector: str, delay: int = 10*SHORT_WAIT_TIME):
     try:
-        el = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
+        _ = WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
         debug(f"URL {url} loaded")
     except TimeoutException:
         error(f"URL {url} took too long to load")
         raise Exception(f"URL {url} took too long to load")
 
+
 def type_in_input_by_selector(driver: WebDriver, css_selector: str, content: str):
     tries = 0
     while tries < 5:
         if element_exists(driver=driver, css_selector=css_selector):
-            element = driver.find_element_by_css_selector(css_selector=css_selector)
+            element = driver.find_element_by_css_selector(
+                css_selector=css_selector)
             break
         else:
             sleep(5)
@@ -41,8 +46,8 @@ def type_in_input_by_selector(driver: WebDriver, css_selector: str, content: str
         if tries == 5:
             raise Exception(f"Element {css_selector} not found")
     for char in content:
-        start = 0.01 
-        stop = 0.3 
+        start = 0.01
+        stop = 0.3
         step = 0.05
         precision = 0.01
         f = 1 / precision
@@ -50,11 +55,13 @@ def type_in_input_by_selector(driver: WebDriver, css_selector: str, content: str
         sleep(n)
         element.send_keys(char)
 
+
 def submit_entry(driver: WebDriver, css_selector: str):
     element = driver.find_element_by_css_selector(css_selector=css_selector)
     if element is None:
         raise Exception(f"Element {css_selector} not found")
     element.send_keys(Keys.ENTER)
+
 
 def clean_driver(driver: WebDriver):
     try:
@@ -64,23 +71,27 @@ def clean_driver(driver: WebDriver):
     finally:
         exit(0)
 
+
 def escape_chars(text: str) -> str:
-    chars = ['_', '*', '[', ']', '(', ')', '~', '`', '#', '+', '-', '=', '|', '{', '}', '.', '!' ]
+    chars = ['_', '*', '[', ']',
+             '(', ')', '~', '`', '#', '+', '-', '=', '|', '{', '}', '.', '!']
     for c in chars:
         text = text.replace(c, f"\\{c}")
     return text
 
+
 def send_message_by_tg(message: str, t: str = 'INFO'):
     data = {
-                "chat_id": str(TG_CHAT_ID),
-                "text": message,
-                "parse_mode": "html"
-        }
+        "chat_id": str(TG_CHAT_ID),
+        "text": message,
+        "parse_mode": "html"
+    }
     r = requests.post(TG_URL, json=data)
     if r.status_code == 200:
         debug(t + "Telegram message sent")
     else:
         debug(f"Message {message} not sent. Error: {r.content}")
+
 
 def send_messages_by_tg(messages: list):
     for m in messages:
@@ -88,5 +99,6 @@ def send_messages_by_tg(messages: list):
                 f"<b>When</b>: <code>{m.get('when')}</code>\n"
                 f"<b>Topic</b>: <code>{m.get('topic')}</code>\n"
                 f"<b>Message</b>: \n{m.get('text')}"
-        )
+                )
+        debug(f"Sending a message from {m.get('from')}")
         send_message_by_tg(message=text, t="JSOS")

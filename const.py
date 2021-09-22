@@ -13,8 +13,8 @@ LOG_LEVEL = DEBUG if os.getenv("LOG_LEVEL") == "DEBUG" else INFO
 MAX_LOGIN_TRIES = 10
 MAX_CHARS = 600
 
-SHORT_WAIT_TIME = 5 # sec
-LONG_WAIT_TIME = 300 # sec
+SHORT_WAIT_TIME = 5  # sec
+LONG_WAIT_TIME = 300  # sec
 VERY_LONG_WAIT_TIME = 1200
 
 MAIN_EDU_BASE_URL = "https://edukacja.pwr.wroc.pl"
