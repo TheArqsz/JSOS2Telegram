@@ -1,4 +1,3 @@
-import logging
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -8,10 +7,11 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
-from const import LOG_LEVEL, SHORT_WAIT_TIME, TG_CHAT_ID, TG_URL
-
+from const import LOG_LEVEL, SHORT_WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
 import random
 import requests
+import tempfile
+import os
 
 
 def element_exists(driver: WebDriver, css_selector: str) -> bool:
@@ -26,12 +26,14 @@ def element_exists(driver: WebDriver, css_selector: str) -> bool:
 
 def wait_for_url_by_element_selector(driver: WebDriver, url: str, css_selector: str, delay: int = 10*SHORT_WAIT_TIME):
     try:
+        debug(f"Waiting for {delay} for an element")
         _ = WebDriverWait(driver, delay).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
         debug(f"URL {url} loaded")
+        return True
     except TimeoutException:
         error(f"URL {url} took too long to load")
-        raise Exception(f"URL {url} took too long to load")
+        return False
 
 
 def type_in_input_by_selector(driver: WebDriver, css_selector: str, content: str):
@@ -81,18 +83,42 @@ def escape_chars(text: str) -> str:
     return text
 
 
+def make_screenshot(driver: WebDriver, delete_on_make=False):
+    path = None
+    with tempfile.NamedTemporaryFile(suffix='.png', delete=delete_on_make) as tmp:
+        path = tmp.name
+        try:
+            debug("Taking a screenshot")
+            driver.save_screenshot(path)
+            debug(f"Screenshot saved as {path}")
+        except:
+            error("Cannot take a screenshot")
+    return path
+
+
+def delete_screenshot(path: str):
+    if os.path.exists(path):
+        debug(f"Deleting file {path}")
+        os.remove(path)
+
+
+def send_photo(image_path: str, image_caption: str = ""):
+    data = {
+        "chat_id": str(TG_CHAT_ID),
+        "caption": image_caption,
+        "parse_mode": "html"
+    }
+    with open(image_path, "rb") as image_file:
+        _r = requests.post(TG_PHOTO_URL, data=data, files={"photo": image_file})
+        if _r.status_code == 200:
+            debug(f"Telegram photo message sent")
+        else:
+            debug(f"Photo {image_path} not sent. Error: {_r.content}")
+
+
 def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):
     if LOG_LEVEL == DEBUG:
-        data = {
-            "chat_id": str(TG_CHAT_ID),
-            "text": message,
-            "parse_mode": "html"
-        }
-        r = requests.post(TG_URL, json=data)
-        if r.status_code == 200:
-            debug(f"{t} Telegram message sent")
-        else:
-            debug(f"Message {message} not sent. Error: {r.content}")
+        send_message_by_tg(message=message, t=t)
 
 
 def send_message_by_tg(message: str, t: str = 'INFO'):
@@ -101,11 +127,11 @@ def send_message_by_tg(message: str, t: str = 'INFO'):
         "text": message,
         "parse_mode": "html"
     }
-    r = requests.post(TG_URL, json=data)
-    if r.status_code == 200:
+    _r = requests.post(TG_MESSAGE_URL, json=data)
+    if _r.status_code == 200:
         debug(f"{t} Telegram message sent")
     else:
-        debug(f"Message {message} not sent. Error: {r.content}")
+        debug(f"Message {message} not sent. Error: {_r.content}")
 
 
 def send_messages_by_tg(messages: list):

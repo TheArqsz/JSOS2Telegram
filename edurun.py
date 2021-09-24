@@ -7,8 +7,8 @@ from edukacja import (
     is_user_logged_in, login, logout
 )
 from helpers import (
-    clean_driver, send_debug_message_by_tg, send_message_by_tg,
-    send_messages_by_tg
+    clean_driver, delete_screenshot, make_screenshot, send_debug_message_by_tg, send_message_by_tg,
+    send_messages_by_tg, send_photo
 )
 
 from time import sleep
@@ -48,22 +48,26 @@ try:
         # Login
         tries = 0
         while not is_user_logged_in(driver=driver) and tries < MAX_LOGIN_TRIES:
+            tries += 1
             logged = login(driver=driver)
             if not logged:
                 debug(
                     f"Trying to log in once more. Tries left - {MAX_LOGIN_TRIES - tries}")
-                tries += 1
         if not is_user_logged_in(driver=driver):
             debug(f"Cannot log in. Sleeping for {VERY_LONG_WAIT_TIME}")
             sleep(VERY_LONG_WAIT_TIME)
             continue
 
         # Check messages
-        access_all_messages(driver=driver)
+        _status = access_all_messages(driver=driver)
+        if not _status:
+            raise Exception("Cannot access messages")
         unread = get_unread_messages(driver=driver)
 
         # Log out
-        logout(driver=driver)
+        _status = logout(driver=driver)
+        if not _status:
+            raise Exception("Cannot log out")
 
         # Send by tg
         send_messages_by_tg(messages=unread)
@@ -78,6 +82,9 @@ except KeyboardInterrupt as e:
     clean_driver(driver=driver)
 except Exception as e:
     exception(e)
-    send_message_by_tg(f"Exiting JSOS loop. Error {e} occured")
+    path = make_screenshot(driver=driver)
+    send_photo(image_path=path,
+               image_caption=f"Error <code>{e}</code> occured. Current state of website as in screenshot")
+    delete_screenshot(path=path)
 finally:
     clean_driver(driver=driver)
