@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
-from const import LOG_LEVEL, SHORT_WAIT_TIME, TG_CHAT_ID, TG_URL
+from const import SHORT_WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
 
 import random
 import requests
@@ -79,6 +79,17 @@ def escape_chars(text: str) -> str:
     for c in chars:
         text = text.replace(c, f"\\{c}")
     return text
+
+
+def send_photo(chat_id, image_path, image_caption=""):
+    data = {
+                "chat_id": str(TG_CHAT_ID),
+                "caption": image_caption
+        }
+    data = {"chat_id": chat_id, "caption": image_caption}
+    with open(image_path, "rb") as image_file:
+        ret = requests.post(TG_PHOTO_URL, data=data, files={"photo": image_file})
+    return ret.json()
 
 
 def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):

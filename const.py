@@ -5,7 +5,8 @@ JSOS_USERNAME = os.getenv("JSOS_USERNAME", "")
 JSOS_PASSWORD = os.getenv("JSOS_PASSWORD", "")
 
 TG_TOKEN = os.getenv("TG_TOKEN", "")
-TG_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
+TG_MESSAGE_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
+TG_PHOTO_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendPhoto"
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 
 LOG_LEVEL = DEBUG if os.getenv("LOG_LEVEL") == "DEBUG" else INFO
