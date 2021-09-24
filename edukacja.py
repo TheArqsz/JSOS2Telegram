@@ -27,22 +27,18 @@ def login(driver: WebDriver):
         warning("Empty JSOS credentials - check them manually")
     driver.delete_all_cookies()
     driver.get(MAIN_EDU_URL)
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=MAIN_EDU_URL, css_selector=MAIN_EDU_LOGIN_BUTTION_SELECTOR)
-    except EdukacjaError(f"Element {MAIN_EDU_LOGIN_BUTTION_SELECTOR} not visible"):
-        clean_driver(driver=driver)
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=MAIN_EDU_URL, css_selector=MAIN_EDU_LOGIN_BUTTION_SELECTOR)
+    if not _loaded:
+        return False
     type_in_input_by_selector(
         driver=driver, css_selector=MAIN_EDU_USERNAME_INPUT_SELECTOR, content=JSOS_USERNAME)
     type_in_input_by_selector(
         driver=driver, css_selector=MAIN_EDU_PASSWORD_INPUT_SELECTOR, content=JSOS_PASSWORD)
     submit_entry(driver=driver, css_selector=MAIN_EDU_PASSWORD_INPUT_SELECTOR)
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=LOGIN_USER_URL, css_selector=EDU_LOGOUT_BUTTON_SELECTOR)
-        return True
-    except EdukacjaError(f"Element {EDU_LOGOUT_BUTTON_SELECTOR} not visible"):
-        return False
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=LOGIN_USER_URL, css_selector=EDU_LOGOUT_BUTTON_SELECTOR)
+    return _loaded
 
 
 def is_user_logged_in(driver: WebDriver) -> bool:
@@ -71,31 +67,25 @@ def is_edukacja_online() -> bool:
 
 def logout(driver: WebDriver):
     debug("Logging user out")
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=MAIN_EDU_URL, css_selector=LOGOUT_USER_SELECTOR)
-    except EdukacjaError(f"Element {LOGOUT_USER_SELECTOR} not visible"):
-        clean_driver(driver=driver)
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=MAIN_EDU_URL, css_selector=LOGOUT_USER_SELECTOR)
+    if not _loaded:
+        return _loaded
     submit_entry(driver=driver, css_selector=LOGOUT_USER_SELECTOR)
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=LOGIN_USER_URL, css_selector=MAIN_EDU_LOGIN_BUTTION_SELECTOR)
-    except EdukacjaError(f"Element {MAIN_EDU_LOGIN_BUTTION_SELECTOR} not visible"):
-        clean_driver(driver=driver)
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=LOGIN_USER_URL, css_selector=MAIN_EDU_LOGIN_BUTTION_SELECTOR)
+    return _loaded
 
 
 def access_all_messages(driver: WebDriver):
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=LOGIN_USER_URL, css_selector=EDU_WIADOMOSC_SELECTOR)
-    except EdukacjaError(f"Element {EDU_WIADOMOSC_SELECTOR} not visible"):
-        clean_driver(driver=driver)
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=LOGIN_USER_URL, css_selector=EDU_WIADOMOSC_SELECTOR)
+    if not _loaded:
+        return _loaded
     submit_entry(driver=driver, css_selector=EDU_WIADOMOSC_SELECTOR)
-    try:
-        wait_for_url_by_element_selector(
-            driver=driver, url=WIADOMOSCI_URL, css_selector=WIADOMOSC_EDU_NOWA_SELECTOR)
-    except EdukacjaError(f"Element {WIADOMOSC_EDU_NOWA_SELECTOR} not visible"):
-        clean_driver(driver=driver)
+    _loaded = wait_for_url_by_element_selector(
+        driver=driver, url=WIADOMOSCI_URL, css_selector=WIADOMOSC_EDU_NOWA_SELECTOR)
+    return _loaded
 
 
 def get_unread_messages(driver: WebDriver) -> list:
@@ -119,11 +109,15 @@ def get_unread_messages(driver: WebDriver) -> list:
 
     for href, m_from, m_topic, m_when in processed_messages:
         driver.get(href)
-        try:
-            wait_for_url_by_element_selector(
+        _loaded = False
+
+        _tries = 0
+        while not _loaded or _tries < 5:
+            _loaded = wait_for_url_by_element_selector(
                 driver=driver, url=href, css_selector=WIADOMOSC_CONTENT_TEXT_SELECTOR)
-        except Exception:
-            clean_driver(driver=driver)
+            _tries += 1
+        if not _loaded:
+            raise Exception("Cannot load element for message sending")
         cont = driver.find_element_by_css_selector(
             css_selector=WIADOMOSC_CONTENT_TEXT_SELECTOR)
         unread.append(
