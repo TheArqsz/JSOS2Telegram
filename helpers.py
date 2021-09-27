@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
-from const import LOG_LEVEL, SHORT_WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
+from const import LOG_LEVEL, WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
 import random
 import requests
 import tempfile
@@ -24,7 +24,7 @@ def element_exists(driver: WebDriver, css_selector: str) -> bool:
         return False
 
 
-def wait_for_url_by_element_selector(driver: WebDriver, url: str, css_selector: str, delay: int = 10*SHORT_WAIT_TIME):
+def wait_for_url_by_element_selector(driver: WebDriver, url: str, css_selector: str, delay: int = 10*WAIT_TIME):
     try:
         debug(f"Waiting for {delay} for an element")
         _ = WebDriverWait(driver, delay).until(

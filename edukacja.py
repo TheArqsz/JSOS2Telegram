@@ -28,7 +28,7 @@ def login(driver: WebDriver):
     driver.delete_all_cookies()
     driver.get(MAIN_EDU_URL)
     _loaded = wait_for_url_by_element_selector(
-        driver=driver, url=MAIN_EDU_URL, css_selector=MAIN_EDU_LOGIN_BUTTION_SELECTOR)
+        driver=driver, url=MAIN_EDU_URL, css_selector=MAIN_EDU_USERNAME_INPUT_SELECTOR)
     if not _loaded:
         return False
     type_in_input_by_selector(
