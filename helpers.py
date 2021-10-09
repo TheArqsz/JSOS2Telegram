@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
-from const import LOG_LEVEL, WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
+from const import LOG_LEVEL, TG_MESSAGE_LIMIT, WAIT_TIME, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
 import random
 import requests
 import tempfile
@@ -105,7 +105,7 @@ def delete_screenshot(path: str):
 def send_photo(image_path: str, image_caption: str = ""):
     data = {
         "chat_id": str(TG_CHAT_ID),
-        "caption": image_caption,
+        "caption": image_caption[TG_MESSAGE_LIMIT-1],
         "parse_mode": "html"
     }
     with open(image_path, "rb") as image_file:
@@ -124,7 +124,7 @@ def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):
 def send_message_by_tg(message: str, t: str = 'INFO'):
     data = {
         "chat_id": str(TG_CHAT_ID),
-        "text": message,
+        "text": message[TG_MESSAGE_LIMIT-1],
         "parse_mode": "html"
     }
     _r = requests.post(TG_MESSAGE_URL, json=data)

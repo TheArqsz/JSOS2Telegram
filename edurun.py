@@ -11,19 +11,23 @@ from helpers import (
     send_messages_by_tg, send_photo
 )
 
-from time import sleep
+from time import sleep, time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from logging import (
     ERROR, basicConfig,
     debug, exception, info,
-    getLogger
+    getLogger, FileHandler, StreamHandler
 )
 
 basicConfig(
     format="[%(name)s] {%(pathname)s:%(lineno)d} %(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    level=LOG_LEVEL
+    level=LOG_LEVEL,
+    handlers=[
+        FileHandler(f"jsos2telegram-{int(time())}.log"),
+        StreamHandler()
+    ]
 )
 getLogger('urllib3.connectionpool').setLevel(ERROR)
 getLogger('urllib3.util.retry').setLevel(ERROR)

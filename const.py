@@ -8,6 +8,7 @@ TG_TOKEN = os.getenv("TG_TOKEN", "")
 TG_MESSAGE_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
 TG_PHOTO_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendPhoto"
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
+TG_MESSAGE_LIMIT = 4096
 
 LOG_LEVEL = DEBUG if os.getenv("LOG_LEVEL") == "DEBUG" else INFO
 
@@ -16,8 +17,8 @@ MAX_CHARS = 600
 
 SHORT_WAIT_TIME = 5  # sec
 WAIT_TIME = 20  # sec
-LONG_WAIT_TIME = 300  # sec
-VERY_LONG_WAIT_TIME = 1200
+LONG_WAIT_TIME = 120  # sec
+VERY_LONG_WAIT_TIME = 300
 
 MAIN_EDU_BASE_URL = "https://edukacja.pwr.wroc.pl"
 MAIN_EDU_URL = "https://edukacja.pwr.wroc.pl/EdukacjaWeb/studia.do"
