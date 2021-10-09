@@ -105,11 +105,12 @@ def delete_screenshot(path: str):
 def send_photo(image_path: str, image_caption: str = ""):
     data = {
         "chat_id": str(TG_CHAT_ID),
-        "caption": image_caption[TG_MESSAGE_LIMIT-1],
+        "caption": image_caption[:TG_MESSAGE_LIMIT-1],
         "parse_mode": "html"
     }
     with open(image_path, "rb") as image_file:
-        _r = requests.post(TG_PHOTO_URL, data=data, files={"photo": image_file})
+        _r = requests.post(TG_PHOTO_URL, data=data,
+                           files={"photo": image_file})
         if _r.status_code == 200:
             debug(f"Telegram photo message sent")
         else:
@@ -124,7 +125,7 @@ def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):
 def send_message_by_tg(message: str, t: str = 'INFO'):
     data = {
         "chat_id": str(TG_CHAT_ID),
-        "text": message[TG_MESSAGE_LIMIT-1],
+        "text": message[:TG_MESSAGE_LIMIT-1],
         "parse_mode": "html"
     }
     _r = requests.post(TG_MESSAGE_URL, json=data)
