@@ -10,12 +10,11 @@ TG_TOKEN = os.getenv("TG_TOKEN", "")
 TG_MESSAGE_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
 TG_PHOTO_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendPhoto"
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
-TG_MESSAGE_LIMIT = 4096
+TG_MESSAGE_LIMIT = 4096 - 200  # 4096 is an official limit for a message and 200 is our limit for HTML tags
 
 LOG_LEVEL = DEBUG if os.getenv("LOG_LEVEL") == "DEBUG" else INFO
 
 MAX_LOGIN_TRIES = 10
-MAX_CHARS = 600
 
 SHORT_WAIT_TIME = 5  # sec
 WAIT_TIME = 20  # sec

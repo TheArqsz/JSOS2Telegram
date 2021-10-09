@@ -79,8 +79,8 @@ try:
             driver.quit()
         except Exception:
             pass
-        debug(f"Sleeping for {LONG_WAIT_TIME}")
-        sleep(LONG_WAIT_TIME)
+        debug(f"Sleeping for {VERY_LONG_WAIT_TIME}")
+        sleep(VERY_LONG_WAIT_TIME)
 except KeyboardInterrupt as e:
     info("Keyboard interrupt raised - cleaning driver and exiting")
     clean_driver(driver=driver)
