@@ -139,12 +139,12 @@ def send_messages_by_tg(messages: list):
     for m in messages:
         _message_text = m.get('text')
         if len(_message_text) > TG_MESSAGE_LIMIT - 1:
-            _suffix = "\n\n[Message redacted due to its length]" 
+            _suffix = "\n\n<code>[Message redacted due to its length]</code>" 
             _message_text = _message_text[:(TG_MESSAGE_LIMIT - 1 - len(_suffix))] + _suffix
         text = (f"<b>From</b>: <code>{m.get('from')}</code>\n"
                 f"<b>When</b>: <code>{m.get('when')}</code>\n"
                 f"<b>Topic</b>: <code>{m.get('topic')}</code>\n"
-                f"<b>Message</b>: \n<pre>{_message_text}</pre>"
+                f"<b>Message</b>: \n\n{_message_text}"
                 )
         debug(f"Sending a message from {m.get('from')}")
         send_message_by_tg(message=text, t="JSOS")
