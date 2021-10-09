@@ -1,6 +1,8 @@
 import os
 from logging import DEBUG, INFO
 
+GECKODRIVER_PATH = os.getenv("GECKODRIVER_PATH", '/usr/bin/geckodriver')
+
 JSOS_USERNAME = os.getenv("JSOS_USERNAME", "")
 JSOS_PASSWORD = os.getenv("JSOS_PASSWORD", "")
 

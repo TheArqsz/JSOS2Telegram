@@ -1,5 +1,5 @@
 from const import (
-    LONG_WAIT_TIME, MAX_LOGIN_TRIES,
+    GECKODRIVER_PATH, LONG_WAIT_TIME, MAX_LOGIN_TRIES,
     VERY_LONG_WAIT_TIME, LOG_LEVEL
 )
 from edukacja import (
@@ -48,7 +48,7 @@ try:
             debug(f"Edukacja is offline. Sleeping for {VERY_LONG_WAIT_TIME}")
             sleep(VERY_LONG_WAIT_TIME)
             continue
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Firefox(options=options, executable_path=GECKODRIVER_PATH)
         # Login
         tries = 0
         while not is_user_logged_in(driver=driver) and tries < MAX_LOGIN_TRIES:
