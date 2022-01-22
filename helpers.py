@@ -1,3 +1,5 @@
+import logging
+from socket import socket
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -8,11 +10,21 @@ from time import sleep
 from logging import DEBUG, debug, error
 from urllib3.exceptions import MaxRetryError
 from const import LOG_LEVEL, LONG_WAIT_TIME, TG_MESSAGE_LIMIT, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
+from selenium.webdriver.remote.command import Command
 import random
 import requests
 import tempfile
 import os
 
+
+def is_driver_working(driver: WebDriver) -> bool:
+    try:
+        driver.execute(Command.STATUS)
+        logging.debug("Driver is working properly")
+        return True
+    except MaxRetryError:
+        logging.debug("Driver is not working")
+        return False
 
 def element_exists(driver: WebDriver, css_selector: str) -> bool:
     try:
@@ -66,13 +78,14 @@ def submit_entry(driver: WebDriver, css_selector: str):
     element.send_keys(Keys.ENTER)
 
 
-def clean_driver(driver: WebDriver):
+def clean_driver(driver: WebDriver, force_quit: bool = True):
     try:
         driver.quit()
     except MaxRetryError:
         debug("Cannot quit driver")
     finally:
-        exit(0)
+        if force_quit:
+            exit(0)
 
 
 def escape_chars(text: str) -> str:

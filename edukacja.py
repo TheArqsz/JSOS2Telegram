@@ -1,8 +1,8 @@
 import requests
-from logging import debug, warning
+from logging import debug, error
 from selenium.webdriver.remote.webdriver import WebDriver
 from helpers import (
-    clean_driver, element_exists,
+    element_exists,
     submit_entry, type_in_input_by_selector,
     wait_for_url_by_element_selector
 )
@@ -21,10 +21,14 @@ from const import (
 class EdukacjaError(Exception):
     pass
 
+class CredentialsError(EdukacjaError):
+    pass
 
-def login(driver: WebDriver):
+
+def login(driver: WebDriver, username: str = JSOS_USERNAME, password: str = JSOS_PASSWORD):
     if JSOS_USERNAME == "" or JSOS_PASSWORD == "":
-        warning("Empty JSOS credentials - check them manually")
+        error("Empty JSOS credentials - check them manually")
+        raise CredentialsError("Empty JSOS credentials")
     driver.delete_all_cookies()
     driver.get(MAIN_EDU_URL)
     _loaded = wait_for_url_by_element_selector(
@@ -32,9 +36,9 @@ def login(driver: WebDriver):
     if not _loaded:
         return False
     type_in_input_by_selector(
-        driver=driver, css_selector=MAIN_EDU_USERNAME_INPUT_SELECTOR, content=JSOS_USERNAME)
+        driver=driver, css_selector=MAIN_EDU_USERNAME_INPUT_SELECTOR, content=username)
     type_in_input_by_selector(
-        driver=driver, css_selector=MAIN_EDU_PASSWORD_INPUT_SELECTOR, content=JSOS_PASSWORD)
+        driver=driver, css_selector=MAIN_EDU_PASSWORD_INPUT_SELECTOR, content=password)
     submit_entry(driver=driver, css_selector=MAIN_EDU_PASSWORD_INPUT_SELECTOR)
     _loaded = wait_for_url_by_element_selector(
         driver=driver, url=LOGIN_USER_URL, css_selector=EDU_LOGOUT_BUTTON_SELECTOR)

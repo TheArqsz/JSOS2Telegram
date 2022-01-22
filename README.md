@@ -3,8 +3,8 @@
 ## Installation
 
 ```bash
-sudo apt install firefox-geckodriver firefox python3 
-sudo python3 -m pip install requests selenium
+sudo apt install firefox-geckodriver firefox python3 python3-pip
+sudo python3 -m pip install -r requirements.txt
 chmod +x wrap.sh
 ```
 
@@ -28,12 +28,19 @@ export TG_CHAT_ID=xxx
 ```
 where `TG_CHAT_ID` is an ID that we collected in step [`Chat ID`](#chat-id), `TG_TOKEN` is a [bot API token](#bot-api-token) and `JSOS_USERNAME` and `JSOS_PASSWORD` are credentials for a JSOS.
 
-## Run
+## Usage
 
 ```bash
 wrap.sh
 ```
 or
 ```bash
-python3 edurun.py
+python3 main.py
+```
+
+### Help
+
+To check parameters for the script use:
+```bash
+python3 main.py -h
 ```
