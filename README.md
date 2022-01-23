@@ -1,6 +1,6 @@
 # JSOS2Telegram bridge
 
-[![Linting](https://github.com/TheArqsz/JSOS2Telegram/actions/workflows/linting.yml/badge.svg?branch=master)](https://github.com/TheArqsz/JSOS2Telegram/actions)
+[![Linting](https://github.com/TheArqsz/JSOS2Telegram/actions/workflows/linting.yml/badge.svg?branch=main)](https://github.com/TheArqsz/JSOS2Telegram/actions)
 [![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue?style=flat&logo=python)](https://www.python.org/)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
