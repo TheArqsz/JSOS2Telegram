@@ -1,5 +1,4 @@
 import logging
-from socket import socket
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -7,12 +6,11 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
-from logging import DEBUG, debug, error
+from logging import debug, error
 from urllib3.exceptions import MaxRetryError
-from const import LOG_LEVEL, LONG_WAIT_TIME, TG_MESSAGE_LIMIT, TG_CHAT_ID, TG_MESSAGE_URL, TG_PHOTO_URL
+from const import LONG_WAIT_TIME
 from selenium.webdriver.remote.command import Command
 import random
-import requests
 import tempfile
 import os
 
@@ -25,6 +23,7 @@ def is_driver_working(driver: WebDriver) -> bool:
     except MaxRetryError:
         logging.debug("Driver is not working")
         return False
+
 
 def element_exists(driver: WebDriver, css_selector: str) -> bool:
     try:
@@ -104,7 +103,7 @@ def make_screenshot(driver: WebDriver, delete_on_make=False):
             debug("Taking a screenshot")
             driver.save_screenshot(path)
             debug(f"Screenshot saved as {path}")
-        except:
+        except Exception:
             error("Cannot take a screenshot")
     return path
 
@@ -113,51 +112,3 @@ def delete_screenshot(path: str):
     if os.path.exists(path):
         debug(f"Deleting file {path}")
         os.remove(path)
-
-
-def send_photo(image_path: str, image_caption: str = ""):
-    data = {
-        "chat_id": str(TG_CHAT_ID),
-        "caption": image_caption[:TG_MESSAGE_LIMIT-1],
-        "parse_mode": "html"
-    }
-    with open(image_path, "rb") as image_file:
-        _r = requests.post(TG_PHOTO_URL, data=data,
-                           files={"photo": image_file})
-        if _r.status_code == 200:
-            debug(f"Telegram photo message sent")
-        else:
-            debug(f"Photo {image_path} not sent. Error: {_r.content}")
-
-
-def send_debug_message_by_tg(message: str, t: str = 'DEBUG'):
-    if LOG_LEVEL == DEBUG:
-        send_message_by_tg(message=message, t=t)
-
-
-def send_message_by_tg(message: str, t: str = 'INFO'):
-    data = {
-        "chat_id": str(TG_CHAT_ID),
-        "text": message,
-        "parse_mode": "html"
-    }
-    _r = requests.post(TG_MESSAGE_URL, json=data)
-    if _r.status_code == 200:
-        debug(f"{t} Telegram message sent")
-    else:
-        debug(f"Message {message} not sent. Error: {_r.content}")
-
-
-def send_messages_by_tg(messages: list):
-    for m in messages:
-        _message_text = m.get('text')
-        if len(_message_text) > TG_MESSAGE_LIMIT - 1:
-            _suffix = "\n\n<code>[Message redacted due to its length]</code>" 
-            _message_text = _message_text[:(TG_MESSAGE_LIMIT - 1 - len(_suffix))] + _suffix
-        text = (f"<b>From</b>: <code>{m.get('from')}</code>\n"
-                f"<b>When</b>: <code>{m.get('when')}</code>\n"
-                f"<b>Topic</b>: <code>{m.get('topic')}</code>\n"
-                f"<b>Message</b>: \n\n{_message_text}"
-                )
-        debug(f"Sending a message from {m.get('from')}")
-        send_message_by_tg(message=text, t="JSOS")

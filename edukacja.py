@@ -21,6 +21,7 @@ from const import (
 class EdukacjaError(Exception):
     pass
 
+
 class CredentialsError(EdukacjaError):
     pass
 
@@ -58,7 +59,7 @@ def is_user_logged_in(driver: WebDriver) -> bool:
 
 def is_edukacja_online() -> bool:
     _h = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36"  # noqa: E501
     }
     try:
         _r = requests.head(MAIN_EDU_URL, headers=_h)
@@ -93,12 +94,13 @@ def access_all_messages(driver: WebDriver):
 
 
 def get_unread_messages(driver: WebDriver) -> list:
-    l = driver.find_elements_by_css_selector(css_selector=WIADOMOSC_EDU_LISTA)
-    l = l[1:]  # Exclude header from list
+    list_of_messages = driver.find_elements_by_css_selector(
+        css_selector=WIADOMOSC_EDU_LISTA)
+    list_of_messages = list_of_messages[1:]  # Exclude header from list
     unread = list()
     raw_messages = list()
     processed_messages = list()
-    for el in l:
+    for el in list_of_messages:
         # Find all unread messages by bold text
         _e_b = el.find_elements_by_css_selector('td > * b')
         _e_a = el.find_elements_by_css_selector('td > * a')  # Find all links
