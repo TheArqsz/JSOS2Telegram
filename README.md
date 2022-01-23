@@ -39,7 +39,7 @@ wrap.sh
 ```
 or
 ```bash
-python3 main.py
+python3 jsos2telegram.py
 ```
 
 ### Help
