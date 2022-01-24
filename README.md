@@ -4,11 +4,12 @@
 [![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue?style=flat&logo=python)](https://www.python.org/)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+This version doesn't use selenium. It handles plain HTTP/S requests to JSOS. To check version that does use selenium and webbrowser, take a look at branch [selenium](/tree/selenium)
+
 ## Installation
 
 ```bash
-sudo apt install firefox-geckodriver firefox python3 python3-pip
-sudo python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 chmod +x wrap.sh
 ```
 

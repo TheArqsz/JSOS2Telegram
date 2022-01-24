@@ -9,7 +9,12 @@ JSOS_USERNAME = os.getenv("JSOS_USERNAME", "")
 JSOS_PASSWORD = os.getenv("JSOS_PASSWORD", "")
 
 TG_TOKEN = os.getenv("TG_TOKEN", "")
+TG_ROOT_URL = "https://api.telegram.org/bot"
+TG_GET_CHAT_ENDPOINT = "/getChat"
+TG_SEND_PHOTO_ENDPOINT = "/sendPhoto"
+TG_SEND_MESSAGE_ENDPOINT = "/sendMessage"
 TG_MESSAGE_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
+TG_GET_CHAT_URL = f"https://api.telegram.org/bot{TG_TOKEN}/getChat"
 TG_PHOTO_URL = f"https://api.telegram.org/bot{TG_TOKEN}/sendPhoto"
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 TG_MESSAGE_LIMIT = 4096 - 200  # 4096 is an official limit for a message and 200 is our limit for HTML tags
