@@ -281,15 +281,14 @@ class Jsos:
     def __get_message_content(self, url: str) -> str:
         response = self.session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        webpage_content = soup.find(id='content-mail').contents[1]
+        webpage_content = soup.find(id='podgladWiadomosci')
         message_body = webpage_content.find_all('div')[0]
-        message_body_list = list()
-        for s in message_body.select('div'):
-            message_body_list.append(s.text.strip())
-
-        message_body_string = '\n'.join([x for x in message_body_list])
-
-        return message_body_string
+        message_body.find_all('span')[0].replaceWith('')  # Remove span header from the message 
+        # message_body_list = list()
+        # for s in message_body.select('div'):
+        #     message_body_list.append(s.text.strip())
+        message_body_string = '\n'.join([line.strip() for line in message_body.text.split('\n')])
+        return message_body_string.strip()
 
     def has_unread_messages(self, messages_table=None):
         """Checks whether user has unread messages
