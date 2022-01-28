@@ -283,7 +283,7 @@ class Jsos:
         soup = BeautifulSoup(response.text, 'html.parser')
         webpage_content = soup.find(id='podgladWiadomosci')
         message_body = webpage_content.find_all('div')[0]
-        message_body.find_all('span')[0].replaceWith('')  # Remove span header from the message 
+        message_body.find_all('span')[0].replaceWith('')  # Remove span header from the message
         # message_body_list = list()
         # for s in message_body.select('div'):
         #     message_body_list.append(s.text.strip())
