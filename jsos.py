@@ -11,6 +11,7 @@ __author__ = 'Arqsz'
 from time import sleep as wait
 from urllib import request
 from bs4 import BeautifulSoup
+import bs4
 import requests as r
 import logging
 
@@ -104,7 +105,7 @@ class Jsos:
             try:
                 login_response = self.session.get(login_url, timeout=10)
                 break
-            except r.exceptions.ConnectTimeout:
+            except (r.exceptions.ConnectTimeout, r.exceptions.ReadTimeout):
                 logging.debug("Retrying login in 5 sec")
                 login_tries -= 1
                 wait(5)
@@ -296,9 +297,33 @@ class Jsos:
         soup = BeautifulSoup(response.text, 'html.parser')
         webpage_content = soup.find(id='podgladWiadomosci')
         message_body = webpage_content.find_all('div')[0]
+        message_body.find_all('span')[0].replaceWith('')
         message_body_string = str()
         for div in message_body.find_all('div'):
-            message_body_string += div.text + '\n'
+            if div.contents == ['<br/>']:
+                continue
+            else:
+                for c in div.contents:
+                    if c is not None:
+                        if type(c) == bs4.Tag and c.contents == []:
+                            continue
+                        elif type(c) == bs4.Tag and c.contents == ['<br/>']:
+                            message_body_string += '\n\n'
+                        elif c != '\n' or c.text[-1] != '\n':
+                            message_body_string += c.text.strip() + '\n'
+                        else:
+                            message_body_string += c.text.strip() + '\n\n'
+        if message_body_string.strip() == '':
+            for c in message_body.contents:
+                if c is not None:
+                    if type(c) == bs4.Tag and c.contents == []:
+                        continue
+                    elif type(c) == bs4.Tag and c.contents == ['<br/>']:
+                        message_body_string += '\n\n'
+                    elif c != '\n' or c.text[-1] != '\n':
+                        message_body_string += c.text.strip() + '\n'
+                    else:
+                        message_body_string += c.text.strip() + '\n\n'
         return message_body_string.strip() 
 
     def has_unread_messages(self, messages_table=None):
