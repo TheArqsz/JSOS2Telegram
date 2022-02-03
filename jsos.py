@@ -9,7 +9,6 @@ This class allows to connect to JSOS end extract data such as:
 __author__ = 'Arqsz'
 
 from time import sleep as wait
-from urllib import request
 from bs4 import BeautifulSoup
 import bs4
 import requests as r
@@ -111,7 +110,7 @@ class Jsos:
                 wait(5)
         if login_response is None:
             raise JsosConnectionException("Cannot login - connection timeout")
-                
+
         if 'url' in login_response.__dict__:
             redirect_url = login_response.url
         else:
@@ -324,7 +323,7 @@ class Jsos:
                         message_body_string += c.text.strip() + '\n'
                     else:
                         message_body_string += c.text.strip() + '\n\n'
-        return message_body_string.strip() 
+        return message_body_string.strip()
 
     def has_unread_messages(self, messages_table=None):
         """Checks whether user has unread messages
