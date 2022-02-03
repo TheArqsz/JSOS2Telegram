@@ -9,6 +9,7 @@ This class allows to connect to JSOS end extract data such as:
 __author__ = 'Arqsz'
 
 from time import sleep as wait
+from urllib import request
 from bs4 import BeautifulSoup
 import requests as r
 import logging
@@ -97,7 +98,19 @@ class Jsos:
 
         login_path = "/index.php/site/loginAsStudent"
         login_url = self.base_jsos_url + login_path
-        login_response = self.session.get(login_url, timeout=10)
+        login_tries = 10
+        login_response = None
+        while login_tries != 0:
+            try:
+                login_response = self.session.get(login_url, timeout=10)
+                break
+            except r.exceptions.ConnectTimeout:
+                logging.debug("Retrying login in 5 sec")
+                login_tries -= 1
+                wait(5)
+        if login_response is None:
+            raise JsosConnectionException("Cannot login - connection timeout")
+                
         if 'url' in login_response.__dict__:
             redirect_url = login_response.url
         else:
@@ -283,12 +296,10 @@ class Jsos:
         soup = BeautifulSoup(response.text, 'html.parser')
         webpage_content = soup.find(id='podgladWiadomosci')
         message_body = webpage_content.find_all('div')[0]
-        message_body.find_all('span')[0].replaceWith('')  # Remove span header from the message
-        # message_body_list = list()
-        # for s in message_body.select('div'):
-        #     message_body_list.append(s.text.strip())
-        message_body_string = '\n'.join([line.strip() for line in message_body.text.split('\n')])
-        return message_body_string.strip()
+        message_body_string = str()
+        for div in message_body.find_all('div'):
+            message_body_string += div.text + '\n'
+        return message_body_string.strip() 
 
     def has_unread_messages(self, messages_table=None):
         """Checks whether user has unread messages
