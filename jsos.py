@@ -308,7 +308,7 @@ class Jsos:
                             continue
                         elif type(c) == bs4.Tag and c.contents == ['<br/>']:
                             message_body_string += '\n\n'
-                        elif c != '\n' or c.text[-1] != '\n':
+                        elif c != '\n' or str(c)[-1] != '\n':
                             message_body_string += c.text.strip() + '\n'
                         else:
                             message_body_string += c.text.strip() + '\n\n'
@@ -319,7 +319,7 @@ class Jsos:
                         continue
                     elif type(c) == bs4.Tag and c.contents == ['<br/>']:
                         message_body_string += '\n\n'
-                    elif c != '\n' or c.text[-1] != '\n':
+                    elif c != '\n' or str(c)[-1] != '\n':
                         message_body_string += c.text.strip() + '\n'
                     else:
                         message_body_string += c.text.strip() + '\n\n'
