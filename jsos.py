@@ -322,7 +322,7 @@ class Jsos:
                     elif c != '\n' or str(c)[-1] != '\n':
                         message_body_string += c.text.strip() + '\n'
                     else:
-                        message_body_string += c.text.strip() + '\n\n'
+                        message_body_string += str(c).strip() + '\n\n'
         return message_body_string.strip()
 
     def has_unread_messages(self, messages_table=None):
