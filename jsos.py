@@ -320,7 +320,7 @@ class Jsos:
                     elif type(c) == bs4.Tag and c.contents == ['<br/>']:
                         message_body_string += '\n\n'
                     elif c != '\n' or str(c)[-1] != '\n':
-                        message_body_string += c.text.strip() + '\n'
+                        message_body_string += str(c).strip() + '\n'
                     else:
                         message_body_string += str(c).strip() + '\n\n'
         return message_body_string.strip()
